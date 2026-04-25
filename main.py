@@ -28,7 +28,7 @@ async def chat(message: UserMessage):
         
     ]
     )
-    return response
+    return response.content[0].text
     
 
     
