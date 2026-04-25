@@ -1,17 +1,34 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from dotenv import load_dotenv
+import os
+import anthropic
 
-class Item(BaseModel):
-    name: str
-    description: str | None = None
-    price: float
-    tax: float | None = None
-
+load_dotenv()
+client = anthropic.Anthropic()
 app = FastAPI()
+api_key = os.getenv("ANTHROPIC_API_KEY")
 
-@app.put("/items/{item_id}")
-async def update_item(item_id: int, item: Item, q: str | None = None):
-    result = {"item_id": item_id, **item.model_dump()}
-    if q: 
-        result.update({"q": q})
-    return result
+class UserMessage(BaseModel):
+    userMessage: str
+
+
+
+
+@app.post("/chat")
+async def chat(message: UserMessage):
+    response = client.messages.create(
+        model = "claude-opus-4-7",
+        max_tokens = 1000,
+        messages = [
+        {
+            "role": "user",
+            "content": message.userMessage
+        }
+        
+    ]
+    )
+    return response
+    
+
+    
