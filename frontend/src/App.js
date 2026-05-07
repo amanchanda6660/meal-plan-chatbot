@@ -4,6 +4,7 @@ import './App.css';
 function App() {
   const [message, setMessage] = useState("")
   const [response, setResponse] = useState("")
+  const [messages, setMessages] = useState([])
 
 
   async function sendMessage(){
@@ -17,6 +18,10 @@ function App() {
 
   const data = await result.json()
   setResponse(data)
+  setMessages([...messages,
+    {role: "user", content: message},
+    {role: "assistant", content: data}
+  ])
   setMessage("")
   }
   return (
@@ -32,7 +37,8 @@ function App() {
       />
       <button onClick={sendMessage}>Send</button>
 
-      <p>{response}</p>
+      {messages.map((msg, index) => 
+        (<p key={index}><strong>{msg.role}</strong>: {msg.content} </p>))}
     </div>
   );
 }
