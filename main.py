@@ -3,10 +3,23 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
 import anthropic
-
+from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
+
+
 client = anthropic.Anthropic()
 app = FastAPI()
+
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 api_key = os.getenv("ANTHROPIC_API_KEY")
 
 class UserMessage(BaseModel):
